@@ -5,14 +5,17 @@
 ### Functions - 
 
 1. Customized for HW architecture features comparison between 
-- 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' and 
-- HW arch features config file from ArchGUI database
+   - 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' and 
+   -  HW arch features config file from ArchGUI database
 2. Formatting HW architecture features config file from ArchGUI database
-3. Comparisons between two HW architecture features config files from ArchGUI database
+3. Comparison between two HW architecture features config files from ArchGUI database
+
+#### [Note] :
+The comparison checks only column **"Block"**, **"Feature"**, and **"config column for each 'platform plus project'"**.
 
 <br />
 
-### --help (-h)
+### Usage - 
 ```
 $ ./archqa.py -h
 usage: ./archqa.py [-h] {diff_gd,diff_dd,format} ...
@@ -93,3 +96,50 @@ To compare two HW arch features config files from ArchGUI database. If -o is not
   -f2 /c/Users/jtsaox/mybin/ProjectConfig_2022-09-13_16_10_30.xlsx \
   -o out_dir
   ```
+
+### Output Files -
+- diff_gd
+  - output_extract_sorted_db.xlsx 
+    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each platform + project"** from ArchGUI database
+  - output_extract_sorted_golden.xlsx
+    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each platform + project"** from 'CSME IE OCS Hardware Architecture Features Per Project.xlsm'
+  - output_diffcfg.xlsx
+    - File that shows all the discrepancies from comparison
+  - output_matched.xlsx
+    - File that shows all the matches from comparison
+  - output_diffcfg_golden.xlsx
+    - File that shows items only found to exist in 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' but could not find exactly the same ones in ArchGUI database
+  - output_diffcfg_db.xlsx
+    - File that shows items only found to exist in ArchGUI database but could not find exactly the same ones in 'CSME IE OCS Hardware Architecture Features Per Project.xlsm'
+  - output_diffbf_extragolden.xlsx
+    - File that shows the discrepancies in respect to column **"Block"** and **"Feature"**, only found to exist in 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' but could not find exactly the same ones in ArchGUI database 
+  - output_diffbf_exrtradb.xlsx
+    - File that shows the discrepancies in respect to column **"Block"** and **"Feature"**, only found to exist in ArchGUI database but could not find exactly the same ones in 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' 
+  - output_formatted_ProjectConfig_2022-09-13_16_10_30.xlsx
+    - The formatted file that preserves all the content from original spreadsheet downloaded from ArchGUI database
+
+- diff_dd
+  - output_formatted_ProjectConfig_2022-09-13_16_10_30.xlsx
+    - The formatted file that preserves all the content from ProjectConfig_2022-09-13_16_10_30.xlsx
+  - output_formatted_ProjectConfig_2022-09-13_16_10_30_2B.xlsx
+      - The formatted file that preserves all the content from ProjectConfig_2022-09-13_16_10_30_2B.xlsx
+  - output_extract_sorted_ProjectConfig_2022-09-13_16_10_30.xlsx
+    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each platform + project"** from ProjectConfig_2022-09-13_16_10_30.xlsx
+  - output_extract_sorted_ProjectConfig_2022-09-13_16_10_30_2B.xlsx
+    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each platform + project"** from ProjectConfig_2022-09-13_16_10_30_2B.xlsx
+  - output_diffcfg.xlsx
+    - File that shows all the discrepancies from comparison
+  - output_matched.xlsx
+    - File that shows all the matches from comparison
+  - output_diffcfg_ProjectConfig_2022-09-13_16_10_30.xlsx
+    - File that shows items only found to exist in 'ProjectConfig_2022-09-13_16_10_30.xlsx' but could not find exactly the same ones in 'ProjectConfig_2022-09-13_16_10_30_2B.xlsx'
+  - output_diffcfg_ProjectConfig_2022-09-13_16_10_30_2B.xlsx
+    - File that shows items only found to exist in 'ProjectConfig_2022-09-13_16_10_30_2B.xlsx' but could not find exactly the same ones in 'ProjectConfig_2022-09-13_16_10_30.xlsx'
+  - output_diffbf_extra_ProjectConfig_2022-09-13_16_10_30.xlsx
+    - File that shows the discrepancies in respect to column **"Block"** and **"Feature"**, only found to exist in 'ProjectConfig_2022-09-13_16_10_30.xlsx' but could not find exactly the same ones in 'ProjectConfig_2022-09-13_16_10_30_2B.xlsx'
+  - output_diffbf_exrtra_ProjectConfig_2022-09-13_16_10_30_2B.xlsx
+    - File that shows the discrepancies in respect to column **"Block"** and **"Feature"**, only found to exist in 'ProjectConfig_2022-09-13_16_10_30_2B.xlsx' but could not find exactly the same ones in 'ProjectConfig_2022-09-13_16_10_30.xlsx'
+
+- format
+  - output_formatted_ProjectConfig_2022-09-13_16_10_30.xlsx
+    - The formatted version of 'ProjectConfig_2022-09-13_16_10_30.xlsx'
