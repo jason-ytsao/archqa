@@ -76,18 +76,21 @@ class XlsxDiff:
 
         self.df_extract_projs_start = database_df_extract_projs_start
 
+
         # clean up strings in cell values
         for col in self.database_df_extract_BF:
             database_df_extract[col] = (
                 self.feature_names_mapping(
-                self.cleanup(database_df_extract[col])
-                .apply(str.upper))
-                )
-        for col in database_cols_projIPG:
-            database_df_extract[col] = (
-                self.feature_names_mapping(
                 self.cleanup(database_df_extract[col]))
                 )
+        
+        for col in database_cols_projIPG:
+            database_df_extract[col] = (
+                self.cleanup(database_df_extract[col])
+                )
+
+        # debug
+        # database_df_extract.to_excel(f'database_df_extract_{name_db}.xlsx')
 
         # No MultiIndex, sort by values
         database_df_extract_sorted = (database_df_extract.sort_values(
@@ -168,10 +171,10 @@ class XlsxDiff:
 
         # clean up column values and then feature names mapping 
         for col in golden_df_extract.columns[:self.golden_extract_projs_start]:
-            golden_df_extract[col] = self.feature_names_mapping(self.cleanup(golden_df_extract[col]).apply(str.upper))
+            golden_df_extract[col] = self.feature_names_mapping(self.cleanup(golden_df_extract[col]))
 
         for col in colNames_proj_ipGeneration:
-            golden_df_extract[col] = self.feature_names_mapping(self.cleanup(golden_df_extract[col]))
+            golden_df_extract[col] = self.cleanup(golden_df_extract[col])
 
         # No MultiIndex, sort by values
         golden_df_extract_sorted = (golden_df_extract.sort_values
@@ -505,14 +508,15 @@ class XlsxDiff:
         """
         clean up the formatting of strings in cells that cause false discrepancy
         """
-        return (x.replace(to_replace='(.*[^ ])\((.*)\)', value=r'\1 (\2)', regex=True)                         # For 'L1$ Parity Support(Data)'
-                .replace(to_replace='\n', value='', regex=True)                                                # For 'Yes \n(x3,100,12.8)'
-                .replace(to_replace='(.*[^ ])[ ]+\((.*)\)', value=r'\1 (\2)', regex=True)                      # For 'Yes  (x3,100,12.8)'
-                .replace(to_replace='(.*)\((.*)[ ]+\)', value=r'\1(\2)', regex=True)                           # For 'L1$ PARITY SUPPORT (TAG )'
-                .replace(to_replace='(\d+)([^ ][A-Z]+)', value=r'\1 \2', regex=True)                           # For '32KB'
-                .replace(to_replace='(.*) \((\w+),(\w+),(\w+)\)', value=r'\1 (\2, \3, \4)', regex=True)        # For 'AES BASIC MODES (ECB,CBC,CTR)'
-                .replace(to_replace='(.*) \((\w+),(\w+)\)', value=r'\1 (\2, \3)', regex=True)                  # For 'AES ADVANCED MODES (OFB,CFB)'
-                .str.upper().str.strip())
+        return (x.replace(to_replace='(L1$ Parity Support)(Data)', value=r'\1 (\2)', regex=True)                # For 'L1$ Parity Support(Data)'
+                .replace(to_replace='(Yes) \n\((x3,100,12.8)\)', value=r'\1 (\2)', regex=True)                  # For 'Yes \n(x3,100,12.8)'
+                .replace(to_replace='(Yes)  \((x3,100,12.8)\)', value=r'\1 (\2)', regex=True)                   # For 'Yes  (x3,100,12.8)'
+                .replace(to_replace='(L1$ PARITY SUPPORT) \((TAG) \)', value=r'\1 (\2)', regex=True)            # For 'L1$ PARITY SUPPORT (TAG )'
+                .replace(to_replace='(32)(KB)', value=r'\1 \2', regex=True)                                     # For '32KB'
+                .replace(to_replace='(AES BASIC MODES) \((ECB),(CBC),(CTR)\)', 
+                            value=r'\1 (\2, \3, \4)', regex=True)                                               # For 'AES BASIC MODES (ECB,CBC,CTR)'
+                .replace(to_replace='(AES ADVANCED MODES) \((OFB),(CFB)\)', value=r'\1 (\2, \3)', regex=True)   # For 'AES ADVANCED MODES (OFB,CFB)'
+                .apply(lambda x: x.strip().upper() if isinstance(x, str) else x))
     
     def rename_merge_col(self, df, label, left, right):
         """
@@ -627,7 +631,7 @@ def setup_parser():
 if __name__ == "__main__":
     parser = setup_parser()
     args = parser.parse_args()
-    done = '---- DONE ----'
+    done = '----- DONE -----'
 
     def display():
         print()

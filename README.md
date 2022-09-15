@@ -81,7 +81,9 @@ To compare 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' and 'Pr
 ### Example 2:
 To format ProjectConfig_2022-09-13_16_10_30.xlsx from ArchGUI. If -o is not provided, it will be set to default, "archqa_outputs" dir under the current directory.
   ```
-  $ ./archqa.py format -f ProjectConfig_2022-09-13_16_10_30.xlsx -o out_dir
+  $ ./archqa.py format \
+  -f ProjectConfig_2022-09-13_16_10_30.xlsx \
+  -o out_dir
   ```
 ### Example 3:
 To compare two HW arch features config files from ArchGUI database. If -o is not provided, it will be set to default, "archqa_outputs" dir under the current directory.
