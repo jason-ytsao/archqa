@@ -74,12 +74,23 @@ optional arguments:
 
 
 ### Example 1:
-To compare 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' and 'ProjectConfig_2022-09-02_17_37_49.xlsx' from ArchGUI. If -g is not provided, it will be set to default, 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' in the current directory. If -o is not provided, it will be set to default, "archqa_outputs" dir under the current directory.
+To compare 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' and 'ProjectConfig_2022-09-02_17_37_49.xlsx' from ArchGUI. If -g is not provided, it will be set to default, 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' in the current directory. 
   ```
   $ ./archqa.py diff_gd \
   -g 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' \
   -d ProjectConfig_2022-09-02_17_37_49.xlsx \
   -o out_dir
+  ```
+  If -g is not provided, the script will pick up 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' in the current directory if it exists.
+  ```
+  $ ./archqa.py diff_gd \
+  -d ProjectConfig_2022-09-02_17_37_49.xlsx \
+  -o out_dir
+  ```
+  If -o is not provided, the output dir will be set to default, "archqa_outputs" dir under the current directory.
+  ```
+  $ ./archqa.py diff_gd \
+  -d ProjectConfig_2022-09-02_17_37_49.xlsx 
   ```
 ### Example 2:
 To format ProjectConfig_2022-09-13_16_10_30.xlsx from ArchGUI. If -o is not provided, it will be set to default, "archqa_outputs" dir under the current directory.
