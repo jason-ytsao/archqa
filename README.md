@@ -100,9 +100,9 @@ To compare two HW arch features config files from ArchGUI database. If -o is not
 ### Output Files -
 - diff_gd
   - output_extract_sorted_db.xlsx 
-    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each platform + project"** from ArchGUI database
+    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each 'platform plus project'"** from ArchGUI database
   - output_extract_sorted_golden.xlsx
-    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each platform + project"** from 'CSME IE OCS Hardware Architecture Features Per Project.xlsm'
+    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each 'platform plus project'"** from 'CSME IE OCS Hardware Architecture Features Per Project.xlsm'
   - output_diffcfg.xlsx
     - File that shows all the discrepancies from comparison
   - output_matched.xlsx
@@ -124,9 +124,9 @@ To compare two HW arch features config files from ArchGUI database. If -o is not
   - output_formatted_ProjectConfig_2022-09-13_16_10_30_2B.xlsx
       - The formatted file that preserves all the content from ProjectConfig_2022-09-13_16_10_30_2B.xlsx
   - output_extract_sorted_ProjectConfig_2022-09-13_16_10_30.xlsx
-    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each platform + project"** from ProjectConfig_2022-09-13_16_10_30.xlsx
+    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each 'platform plus project'"** from ProjectConfig_2022-09-13_16_10_30.xlsx
   - output_extract_sorted_ProjectConfig_2022-09-13_16_10_30_2B.xlsx
-    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each platform + project"** from ProjectConfig_2022-09-13_16_10_30_2B.xlsx
+    - Sorted file that contains only column **"Block"**, **"Feature"**, and **"config column for each 'platform plus project'"** from ProjectConfig_2022-09-13_16_10_30_2B.xlsx
   - output_diffcfg.xlsx
     - File that shows all the discrepancies from comparison
   - output_matched.xlsx
