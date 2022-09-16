@@ -122,6 +122,8 @@ To compare two HW arch features config files from ArchGUI database. If -o is not
     - File that shows items only found to exist in 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' but could not find exactly the same ones in ArchGUI database
   - output_diffcfg_db.xlsx
     - File that shows items only found to exist in ArchGUI database but could not find exactly the same ones in 'CSME IE OCS Hardware Architecture Features Per Project.xlsm'
+  - output_diffbf.xlsx
+    - File that shows the discrepancies in respect to column **"Block"** and **"Feature"**
   - output_diffbf_extragolden.xlsx
     - File that shows the discrepancies in respect to column **"Block"** and **"Feature"**, only found to exist in 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' but could not find exactly the same ones in ArchGUI database 
   - output_diffbf_exrtradb.xlsx
@@ -146,6 +148,8 @@ To compare two HW arch features config files from ArchGUI database. If -o is not
     - File that shows items only found to exist in 'ProjectConfig_2022-09-13_16_10_30.xlsx' but could not find exactly the same ones in 'ProjectConfig_2022-09-13_16_10_30_2B.xlsx'
   - output_diffcfg_ProjectConfig_2022-09-13_16_10_30_2B.xlsx
     - File that shows items only found to exist in 'ProjectConfig_2022-09-13_16_10_30_2B.xlsx' but could not find exactly the same ones in 'ProjectConfig_2022-09-13_16_10_30.xlsx'
+  - output_diffbf.xlsx
+    - File that shows the discrepancies in respect to column **"Block"** and **"Feature"**
   - output_diffbf_extra_ProjectConfig_2022-09-13_16_10_30.xlsx
     - File that shows the discrepancies in respect to column **"Block"** and **"Feature"**, only found to exist in 'ProjectConfig_2022-09-13_16_10_30.xlsx' but could not find exactly the same ones in 'ProjectConfig_2022-09-13_16_10_30_2B.xlsx'
   - output_diffbf_exrtra_ProjectConfig_2022-09-13_16_10_30_2B.xlsx

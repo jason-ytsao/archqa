@@ -38,6 +38,7 @@ class XlsxDiff:
             self.wr_diff_database = f"{self.output_dir}/output_diffcfg_db.xlsx"
             self.wr_diffBF_golden = f"{self.output_dir}/output_diffbf_extragolden.xlsx"
             self.wr_diffBF_database = f"{self.output_dir}/output_diffbf_exrtradb.xlsx"
+            self.wr_diffBF_all = f"{self.output_dir}/output_diffbf.xlsx"
         elif flag == 'diff_dd':
             self.wr_database_extract_sorted = ''
             self.wr_discrepancy = f"{self.output_dir}/output_diffcfg.xlsx"
@@ -45,7 +46,9 @@ class XlsxDiff:
             self.wr_diff_golden = ''
             self.wr_diff_database = ''
             self.wr_diffBF_golden = ''
-            self.wr_diffBF_database = ''            
+            self.wr_diffBF_database = '' 
+            self.wr_diffBF_all = f"{self.output_dir}/output_diffbf.xlsx"
+
 
     def process_database(self, db):
         """
@@ -86,7 +89,8 @@ class XlsxDiff:
         
         for col in database_cols_projIPG:
             database_df_extract[col] = (
-                self.cleanup(database_df_extract[col])
+                self.feature_names_mapping(
+                self.cleanup(database_df_extract[col]))
                 )
 
         # debug
@@ -174,7 +178,7 @@ class XlsxDiff:
             golden_df_extract[col] = self.feature_names_mapping(self.cleanup(golden_df_extract[col]))
 
         for col in colNames_proj_ipGeneration:
-            golden_df_extract[col] = self.cleanup(golden_df_extract[col])
+            golden_df_extract[col] = self.feature_names_mapping(self.cleanup(golden_df_extract[col]))
 
         # No MultiIndex, sort by values
         golden_df_extract_sorted = (golden_df_extract.sort_values
@@ -244,11 +248,11 @@ class XlsxDiff:
             )
         # sort by values
         discrepancy.sort_values(
-            by=discrepancy.columns[:self.df_extract_projs_start].tolist(), 
+            by=discrepancy.columns[self.df_extract_projs_start - 1], 
             inplace=True
         )
         matched.sort_values(
-            by=matched.columns[:self.df_extract_projs_start].tolist(),
+            by=matched.columns[self.df_extract_projs_start - 1],
             inplace=True
         )
 
@@ -292,7 +296,15 @@ class XlsxDiff:
                 'golden_only', 
                 'database_only'
                 )
-            
+            # sort by values
+            diff_golden.sort_values(
+                by=diff_golden.columns[self.df_extract_projs_start - 1], 
+                inplace=True
+                )
+            diff_database.sort_values(
+                by=diff_database.columns[self.df_extract_projs_start - 1], 
+                inplace=True
+                )         
             # remove index col
             diff_golden_ri = self.index_1st_col(diff_golden)
             diff_database_ri = self.index_1st_col(diff_database)
@@ -333,7 +345,16 @@ class XlsxDiff:
                 'database1_only', 
                 'database2_only'
                 )
-            
+
+            # sort by values
+            diff_golden.sort_values(
+                by=diff_golden.columns[self.df_extract_projs_start - 1], 
+                inplace=True
+                )
+            diff_database.sort_values(
+                by=diff_database.columns[self.df_extract_projs_start - 1], 
+                inplace=True
+                )                  
             # remove index col
             diff_golden_ri = self.index_1st_col(diff_golden)
             diff_database_ri = self.index_1st_col(diff_database)
@@ -360,6 +381,12 @@ class XlsxDiff:
                 indicator=True, 
                 how='outer').loc[lambda v: v['_merge'] == 'right_only']
                 )
+            diffBF_all = (
+                pd.merge(df1.loc[:, self.database_df_extract_BF], 
+                df2.loc[:, self.database_df_extract_BF], 
+                indicator=True, 
+                how='outer').loc[lambda v: v['_merge'] != 'both']
+                )
             # Rename _merge column
             self.rename_merge_col(
                 diffBF_golden, 
@@ -373,16 +400,39 @@ class XlsxDiff:
                 'golden_only', 
                 'database_only'
                 )
-            
+            self.rename_merge_col(
+                diffBF_all, 
+                'Match', 
+                'golden_only', 
+                'database_only'
+                )
+
+            # sort by values
+            diffBF_golden.sort_values(
+                by=diffBF_golden.columns[self.df_extract_projs_start - 1], 
+                inplace=True
+            )
+            diffBF_database.sort_values(
+                by=diffBF_database.columns[self.df_extract_projs_start - 1], 
+                inplace=True
+            )
+            diffBF_all.sort_values(
+                by=diffBF_all.columns[self.df_extract_projs_start - 1], 
+                inplace=True
+            )
             # remove index col
             diffBF_golden_ri = self.index_1st_col(diffBF_golden)
             diffBF_database_ri = self.index_1st_col(diffBF_database)
+            diffBF_all_ri = self.index_1st_col(diffBF_all)
             
             diffBF_golden_ri.to_excel(self.wr_diffBF_golden)
             print(f"Dumping file {self.cwd}/{self.wr_diffBF_golden}")
 
             diffBF_database_ri.to_excel(self.wr_diffBF_database)
             print(f"Dumping file {self.cwd}/{self.wr_diffBF_database}")
+
+            diffBF_all_ri.to_excel(self.wr_diffBF_all)
+            print(f"Dumping file {self.cwd}/{self.wr_diffBF_all}")
 
             self.equal(df1, df2)
 
@@ -399,6 +449,13 @@ class XlsxDiff:
                 indicator=True, 
                 how='outer').loc[lambda v: v['_merge'] == 'right_only']
                 )
+            diffBF_all = (
+                pd.merge(df1[0].loc[:, self.database_df_extract_BF], 
+                df2[0].loc[:, self.database_df_extract_BF], 
+                indicator=True, 
+                how='outer').loc[lambda v: v['_merge'] != 'both']
+                )
+                
             # Rename _merge column
             self.rename_merge_col(
                 diffBF_golden, 
@@ -412,10 +469,31 @@ class XlsxDiff:
                 'database1_only', 
                 'database2_only'
                 )
+            self.rename_merge_col(
+                diffBF_all, 
+                'Match', 
+                'database1_only', 
+                'database2_only'
+                )
+
+            # sort by values
+            diffBF_golden.sort_values(
+                by=diffBF_golden.columns[self.df_extract_projs_start - 1], 
+                inplace=True
+            )
+            diffBF_database.sort_values(
+                by=diffBF_database.columns[self.df_extract_projs_start - 1], 
+                inplace=True
+            )
+            diffBF_all.sort_values(
+                by=diffBF_all.columns[self.df_extract_projs_start - 1], 
+                inplace=True
+            )
 
             # remove index col
             diffBF_golden_ri = self.index_1st_col(diffBF_golden)
             diffBF_database_ri = self.index_1st_col(diffBF_database)
+            diffBF_all_ri = self.index_1st_col(diffBF_all)
 
             self.wr_diffBF_golden = f"{self.output_dir}/output_diffbf_extra_{df1[1]}.xlsx"
             diffBF_golden_ri.to_excel(self.wr_diffBF_golden)
@@ -424,6 +502,9 @@ class XlsxDiff:
             self.wr_diffBF_database = f"{self.output_dir}/output_diffbf_exrtra_{df2[1]}.xlsx"
             diffBF_database_ri.to_excel(self.wr_diffBF_database)
             print(f"Dumping file {self.cwd}/{self.wr_diffBF_database}")
+
+            diffBF_all_ri.to_excel(self.wr_diffBF_all)
+            print(f"Dumping file {self.cwd}/{self.wr_diffBF_all}")
 
             self.equal(df1[0], df2[0])
 
@@ -463,59 +544,98 @@ class XlsxDiff:
 
     def feature_names_mapping(self, x):
         """
-        Replace revised's to match golden's; 
-        Two of Golden's are replaced to match revised's: 'IPC * CHANNEL (DEFAULT *)', 'OCS SAVE AND RESTORE'
-
-        R: 'PRTC NUM OF PRIVATE CHANNELS'                                           --> G: 'PRTC NUM OF PRIVATE CHANNELSCHANNEL 0 - ESECHANNEL1 - PRTC'
+        G: 'PRTC NUM OF PRIVATE CHANNELS\nCHANNEL 0 - ESE\nCHANNEL1 - PRTC'         --> R: 'PRTC NUM OF PRIVATE CHANNELS'
         R: 'DOEMAILBOX'                                                             --> G: 'DOE MAILBOX'
         R: 'FTPM INTERFACE ACCESS TYPE (LT ADDRESS)'                                --> G: 'FTPM INTERFACE ACCESS TYPE'
         R: 'HECI (NUM_INSTANCES)'                                                   --> G: 'HECI'
         G: 'IPC * CHANNEL (DEFAULT *) (16 OR 48 BIT ADDRESSING, DEFAULT IS 16-BIT)' --> R: 'IPC * CHANNEL (DEFAULT *)'
         R: 'PTT (FTPM)'                                                             --> G: 'PTT'        
-        R: 'IDE-R, KT SUPPORT'                                                      --> G: 'IDE-R'
         R: 'ROOT OF ROOTSPACE'                                                      --> G: 'ROOT OF ROOT SPACE' 
         R: 'TBD (RESERVED GPIC (# WIRES'                                            --> G: 'TBD (RESERVED) GPIC (# WIRES)'         
         R: 'DMA-AES_P (INTEGRITY CHECK VALUE) SCHEME'                               --> G: 'DMA-AES_P ICV (INTEGRITY CHECK VALUE) SCHEME'         
-        R: 'ECDSA (FW ASSISTED/HW BUILD-IN)'                                        --> G: 'ECDSA (FW ASSISTED / HW BUILD-IN)'         
         G: 'OCS  SAVE AND RESTORE'                                                  --> R: 'OCS SAVE AND RESTORE'
+        G: '16 BIT IOSF SIDEBAND PORT ID SUPPORT\n(CM DEVICE LIST)'                 --> R: '16 BIT IOSF SIDEBAND PORT ID SUPPORT (CM DEVICE LIST)'
+        R: 'GSC FLR(DEVICE RESET)'                                                  --> G: 'GSC FLR (DEVICE RESET)'
+        R: 'AES BASIC MODES (ECB,CBC,CTR)'                                          --> G: 'AES BASIC MODES (ECB, CBC, CTR)'
+        R: 'AES ADVANCED MODES (OFB,CFB)'                                           --> G: 'AES ADVANCED MODES (OFB, CFB)'
+        G: 'L1$ PARITY SUPPORT (TAG )'                                              --> 'L1$ PARITY SUPPORT (TAG)'
+        R: 'L1$ PARITY SUPPORT(TAG)'                                                --> 'L1$ PARITY SUPPORT (TAG)'
+        R: 'L1$ PARITY SUPPORT(DATA)'                                               --> 'L1$ PARITY SUPPORT (DATA)'
+        R: 'BUNIT CACHE SIZE (IN KB)'                                               --> G: 'BUNIT CACHE SIZE'
+        R: 'DTF(DEBUG TRACE FABRIC)'                                                --> G: 'DTF (DEBUG TRACE FABRIC)
+        R: 'ECC GEN1 P256(WITH SCA MITIGATION)'                                     --> G: 'ECC GEN1 P256 (WITH SCA MITIGATION)'
+        R: 'ECC GEN1 P384(WITH SCA MITIGATION)'                                     --> G: 'ECC GEN1 P384 (WITH SCA MITIGATION)'
+        R: 'ECDSA(FW ASSISTED/HW BUILD-IN)'                                         --> G: 'ECDSA (FW ASSISTED / HW BUILD-IN)'
+        R: 'HW EXTEND REGISTER FOR FW MEASUREMENT(SHA-256)'                         --> G: 'HW EXTEND REGISTER FOR FW MEASUREMENT (SHA-256)'
+        R: 'IOMMU DMA ACCESS CONTROL (# ENTRIES)'                                   --> G: 'IOMMU DMA ACCESS CONTROL'
+        R: 'IOMMU TRANSLATION TABLE (# ENTRY)'                                      --> G: 'IOMMU TRANSLATION TABLE'
+        R: 'IOSF-P INTERFACE WIDTH( # IN BITS)'                                     --> G: 'IOSF-P INTERFACE WIDTH'
+        R: 'L1$ SIZE (CODE + DATA) (# IN KB)'                                       --> G: 'L1$ SIZE (CODE + DATA)'
+        R: 'ROM SIZE (# IN KB)'                                                     --> G: 'ROM SIZE'
+        R: 'SM4 BASIC MODES(ECB,CBC,CTR)'                                           --> G: 'SM4 BASIC MODES (ECB, CBC, CTR)'
+        R: 'SRAM SIZE (EXCLUDING ECC BITS,  # IN KB)'                               --> G: 'SRAM SIZE (EXCLUDING ECC BITS)'
         """
-        return (x.replace(to_replace='IDE-R, KT SUPPORT',                           
-                value='IDE-R')                                                
-                .replace(to_replace='PRTC NUM OF PRIVATE CHANNELS',
-                value='PRTC NUM OF PRIVATE CHANNELSCHANNEL 0 - ESECHANNEL1 - PRTC')                                                
-                .replace(to_replace='DOEMAILBOX',
-                value='DOE MAILBOX')                                                
-                .replace(to_replace='FTPM INTERFACE ACCESS TYPE (LT ADDRESS)',
-                value='FTPM INTERFACE ACCESS TYPE')                                 
-                .replace(to_replace='HECI (NUM_INSTANCES)',
-                value='HECI')                                                       
-                .replace(to_replace='(IPC \d CHANNEL \(DEFAULT FOR .+\)) \(16 OR 48 BIT ADDRESSING, DEFAULT IS .+\)',                
+        return (x.replace(to_replace='(PRTC NUM OF PRIVATE CHANNELS)\n(CHANNEL 0 - ESE)\n(CHANNEL1 - PRTC)',
+                value=r'\1', regex=True)                                   
+                .replace(to_replace='(DOE)(MAILBOX)',
+                value=r'\1 \2', regex=True)
+                .replace(to_replace='(FTPM INTERFACE ACCESS TYPE)[ ]*\(LT ADDRESS\)',
                 value=r'\1', regex=True)
-                .replace(to_replace='PTT (FTPM)',       
-                value='PTT')
-                .replace(to_replace='ROOT OF ROOTSPACE',
-                value='ROOT OF ROOT SPACE')
-                .replace(to_replace='TBD (RESERVED GPIC (# WIRES',     
-                value='TBD (RESERVED) GPIC (# WIRES)')
-                .replace(to_replace='DMA-AES_P (INTEGRITY CHECK VALUE) SCHEME',       
-                value='DMA-AES_P ICV (INTEGRITY CHECK VALUE) SCHEME')
-                .replace(to_replace='ECDSA (FW ASSISTED/HW BUILD-IN)',       
-                value='ECDSA (FW ASSISTED / HW BUILD-IN)')
-                .replace(to_replace='OCS  SAVE AND RESTORE',
-                value='OCS SAVE AND RESTORE'))         
+                .replace(to_replace='HECI[ ]*\(NUM_INSTANCES\)',
+                value='HECI', regex=True)
+                .replace(to_replace='(IPC \d CHANNEL \(DEFAULT FOR .+\))[ ]*\(16 OR 48 BIT ADDRESSING, DEFAULT IS .+BIT\)',                
+                value=r'\1', regex=True)
+                .replace(to_replace='(PTT)[ ]*\(FTPM\)',       
+                value=r'\1', regex=True)
+                .replace(to_replace='(ROOT)[ ]*(OF)[ ]*(ROOT)(SPACE)',
+                value=r'\1 \2 \3 \4', regex=True)
+                .replace(to_replace='(TBD)[ ]*\((RESERVED)[ ]*(GPIC)[ ]*\([ ]*\#[ ]*(WIRES)',     
+                value=r'\1 (\2) \3 (# \4)', regex=True)
+                .replace(to_replace='(DMA-AES_P)[ ]*\((INTEGRITY)[ ]*(CHECK)[ ]*(VALUE)[ ]*\)[ ]*(SCHEME)',       
+                value=r'\1 ICV (\2 \3 \4) \5', regex=True)
+                .replace(to_replace='(OCS)[ ]*(SAVE)[ ]*(AND)[ ]*(RESTORE)',
+                value=r'\1 \2 \3 \4', regex=True)
+                .replace(to_replace='([ ]*16 BIT IOSF SIDEBAND PORT ID SUPPORT[ ]*)\n\([ ]*(CM DEVICE LIST)[ ]*\)',
+                value=r'\1 (\2)', regex=True)
+                .replace('(GSC FLR)[ ]*\([ ]*(DEVICE RESET)[ ]*\)', 
+                value=r'\1 (\2)', regex=True)
+                .replace('(AES BASIC MODES)[ ]*\([ ]*(ECB)[ ]*,[ ]*(CBC)[ ]*,[ ]*(CTR)[ ]*\)',
+                value=r'\1 (\2, \3, \4)', regex=True)
+                .replace(to_replace='(AES ADVANCED MODES)[ ]*\([ ]*(OFB)[ ]*,[ ]*(CFB)[ ]*\)', 
+                value=r'\1 (\2, \3)', regex=True)
+                .replace(to_replace='(L1\$ PARITY SUPPORT)[ ]*\([ ]*(\w+)[ ]*\)', 
+                value=r'\1 (\2)', regex=True)
+                .replace(to_replace='(BUNIT CACHE SIZE)[ ]*\([ ]*IN[ ]*KB[ ]*\)',
+                value=r'\1', regex=True)
+                .replace(to_replace='(DTF)[ ]*\([ ]*(DEBUG TRACE FABRIC)[ ]*\)',
+                value=r'\1 (\2)', regex=True)
+                .replace(to_replace='(ECC GEN1 P\d+)[ ]*\([ ]*(WITH SCA MITIGATION)[ ]*\)',
+                value=r'\1 (\2)', regex=True)
+                .replace(to_replace='(ECDSA)[ ]*\([ ]*(FW)[ ]*(ASSISTED)[ ]*/[ ]*(HW)[ ]*(BUILD-IN)[ ]*\)',                     
+                value=r'\1 (\2 \3 / \4 \5)', regex=True)
+                .replace(to_replace='(HW EXTEND REGISTER FOR FW MEASUREMENT)[ ]*\([ ]*(SHA-\d+)[ ]*\)',
+                value=r'\1 (\2)', regex=True)
+                .replace(to_replace='(IOMMU DMA ACCESS CONTROL)[ ]*\([ ]*\#[ ]*ENTRIES[ ]*\)',
+                value=r'\1', regex=True)
+                .replace(to_replace='(IOMMU TRANSLATION TABLE)[ ]*\([ ]*\#[ ]*ENTRY[ ]*\)',
+                value=r'\1', regex=True)
+                .replace(to_replace='(IOSF-P INTERFACE WIDTH)[ ]*\([ ]*\#[ ]*IN[ ]*BITS[ ]*\)',
+                value=r'\1', regex=True)
+                .replace(to_replace='(L1\$ SIZE \(CODE \+ DATA\))[ ]*\([ ]*\#[ ]*IN[ ]*KB[ ]*\)',
+                value=r'\1', regex=True)
+                .replace(to_replace='(ROM SIZE)[ ]*\([ ]*\#[ ]*IN[ ]*KB[ ]*\)',
+                value=r'\1', regex=True)
+                .replace(to_replace='(SM4 BASIC MODES)[ ]*\([ ]*(ECB)[ ]*,[ ]*(CBC)[ ]*,[ ]*(CTR)[ ]*\)',
+                value=r'\1 (\2, \3, \4)', regex=True)
+                .replace(to_replace='(SRAM)[ ]*(SIZE)[ ]*\([ ]*(EXCLUDING)[ ]*(ECC)[ ]*(BITS)[ ]*,[ ]*\#[ ]*IN[ ]*KB[ ]*\)',
+                value=r'\1 \2 (\3 \4 \5)', regex=True)
+                )         
 
     def cleanup(self, x):
         """
-        clean up the formatting of strings in cells that cause false discrepancy
+        Capitalize and strip to clean up the formatting of strings that cause false discrepancy
         """
-        return (x.replace(to_replace='(L1$ Parity Support)(Data)', value=r'\1 (\2)', regex=True)                # For 'L1$ Parity Support(Data)'
-                .replace(to_replace='(Yes) \n\((x3,100,12.8)\)', value=r'\1 (\2)', regex=True)                  # For 'Yes \n(x3,100,12.8)'
-                .replace(to_replace='(Yes)  \((x3,100,12.8)\)', value=r'\1 (\2)', regex=True)                   # For 'Yes  (x3,100,12.8)'
-                .replace(to_replace='(L1$ PARITY SUPPORT) \((TAG) \)', value=r'\1 (\2)', regex=True)            # For 'L1$ PARITY SUPPORT (TAG )'
-                .replace(to_replace='(32)(KB)', value=r'\1 \2', regex=True)                                     # For '32KB'
-                .replace(to_replace='(AES BASIC MODES) \((ECB),(CBC),(CTR)\)', 
-                            value=r'\1 (\2, \3, \4)', regex=True)                                               # For 'AES BASIC MODES (ECB,CBC,CTR)'
-                .replace(to_replace='(AES ADVANCED MODES) \((OFB),(CFB)\)', value=r'\1 (\2, \3)', regex=True)   # For 'AES ADVANCED MODES (OFB,CFB)'
+        return (x.replace(to_replace='(Yes)[ ]*[\n]*[ ]*\([ ]*(x3,100,12.8)[ ]*\)', value=r'\1 (\2)', regex=True)  # For 'Yes \n(x3,100,12.8)'
                 .apply(lambda x: x.strip().upper() if isinstance(x, str) else x))
     
     def rename_merge_col(self, df, label, left, right):
@@ -531,14 +651,14 @@ class XlsxDiff:
             .replace(to_replace='right_only', value=right))
 
 
-def setup_parser():
+def setup_parser(script_name):
     """
     Set up the argument parser
     """
     descript = "Customized for processing 'CSME IE OCS Hardware Architecture Features Per Project.xlsm'"
 
     parser = aps.ArgumentParser(
-        prog='./archqa.py',
+        prog=f'./{script_name}.py',
         description=descript
     )
     subparsers = parser.add_subparsers(dest='command')
@@ -570,8 +690,8 @@ def setup_parser():
         '--out_dir',
         type=str,
         metavar='',
-        default='archqa_outputs',
-        help='Output directory, default "archqa_outputs"'
+        default=f'{script_name}_outputs',
+        help=f'Output directory, default "{script_name}_outputs"'
     )
 
     # subparser for diff_dd
@@ -600,8 +720,8 @@ def setup_parser():
         '--out_dir',
         type=str,
         metavar='',
-        default='archqa_outputs',
-        help='Output directory, default "archqa_outputs"'
+        default=f'{script_name}_outputs',
+        help=f'Output directory, default "{script_name}_outputs"'
     )
 
     # subparser for format
@@ -622,14 +742,14 @@ def setup_parser():
         '--out_dir',
         type=str,
         metavar='',
-        default='archqa_outputs',
-        help='Output directory, default "archqa_outputs"'
+        default=f'{script_name}_outputs',
+        help=f'Output directory, default "{script_name}_outputs"'
     )
     return parser
 
 
 if __name__ == "__main__":
-    parser = setup_parser()
+    parser = setup_parser(archqa)
     args = parser.parse_args()
     done = '----- DONE -----'
 
