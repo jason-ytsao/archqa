@@ -749,7 +749,8 @@ def setup_parser(script_name):
 
 
 if __name__ == "__main__":
-    parser = setup_parser(archqa)
+    script = 'archqa'
+    parser = setup_parser(script)
     args = parser.parse_args()
     done = '----- DONE -----'
 
