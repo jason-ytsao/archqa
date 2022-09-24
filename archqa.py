@@ -1,11 +1,14 @@
 #!python
-# jasonx.tsao@intel.com - [09/14/2022]
+# jasonx.tsao@intel.com - [09/23/2022]
 
 import pandas as pd
 import argparse as aps
 import re
 import numpy as np
 from pathlib import Path
+from openpyxl import Workbook, load_workbook
+from openpyxl.styles import PatternFill, Font
+import typing
 
 
 class XlsxDiff:
@@ -29,25 +32,22 @@ class XlsxDiff:
         self.output_dir = out_dir
         self.p = Path(self.output_dir)
         self.p.mkdir(parents=True, exist_ok=True)
+        self.wr_discrepancy = f"{self.output_dir}/output_diffcfg.xlsx"
+        self.wr_matched = f"{self.output_dir}/output_matched.xlsx"
+        self.wr_diffBF_all = f"{self.output_dir}/output_diffbf.xlsx"
         if flag == 'diff_gd':
             self.wr_database_extract_sorted = f"{self.output_dir}/output_extract_sorted_db.xlsx"
             self.wr_golden_extract_sorted = f"{self.output_dir}/output_extract_sorted_golden.xlsx"
-            self.wr_discrepancy = f"{self.output_dir}/output_diffcfg.xlsx"
-            self.wr_matched = f"{self.output_dir}/output_matched.xlsx"
             self.wr_diff_golden = f"{self.output_dir}/output_diffcfg_golden.xlsx"
             self.wr_diff_database = f"{self.output_dir}/output_diffcfg_db.xlsx"
             self.wr_diffBF_golden = f"{self.output_dir}/output_diffbf_extragolden.xlsx"
             self.wr_diffBF_database = f"{self.output_dir}/output_diffbf_exrtradb.xlsx"
-            self.wr_diffBF_all = f"{self.output_dir}/output_diffbf.xlsx"
         elif flag == 'diff_dd':
             self.wr_database_extract_sorted = ''
-            self.wr_discrepancy = f"{self.output_dir}/output_diffcfg.xlsx"
-            self.wr_matched = f"{self.output_dir}/output_matched.xlsx"
             self.wr_diff_golden = ''
             self.wr_diff_database = ''
             self.wr_diffBF_golden = ''
             self.wr_diffBF_database = '' 
-            self.wr_diffBF_all = f"{self.output_dir}/output_diffbf.xlsx"
 
 
     def process_database(self, db):
@@ -63,10 +63,10 @@ class XlsxDiff:
         
         # uniquify database_projs
         self.database_projs = list(dict.fromkeys(database_projs))
-
+        
         # set extract columns
         database_cols = ['Functional Block', 'Feature Name', *database_cols_projIPG]
-        
+
         # extract columns
         database_df_extract = database_df.loc[:, database_cols]
 
@@ -105,18 +105,20 @@ class XlsxDiff:
 
         if self.flag == 'diff_gd':
             database_df_extract_sorted_ri.to_excel(self.wr_database_extract_sorted)
+            self.odd_row_coloring(self.wr_database_extract_sorted)
             print(f"Dumping file {self.cwd}/{self.wr_database_extract_sorted}")
             return database_df_extract_sorted
         elif self.flag == 'diff_dd':
             self.wr_database_extract_sorted = f"{self.output_dir}/output_extract_sorted_{name_db}.xlsx"
             database_df_extract_sorted_ri.to_excel(self.wr_database_extract_sorted)
+            self.odd_row_coloring(self.wr_database_extract_sorted)
             print(f"Dumping file {self.cwd}/{self.wr_database_extract_sorted}")
             return [database_df_extract_sorted, name_db]
 
 
     def process_golden(self, golden):
         """
-        Process `CSME IE OCS Hardware Architecture Features Per Project.xlsm`
+        Customized to process `CSME IE OCS Hardware Architecture Features Per Project.xlsm` for comparisons
         """
         golden_df = pd.read_excel(golden, sheet_name='CSE CSME IE OCS Features', skiprows=1, index_col=None)
 
@@ -180,6 +182,10 @@ class XlsxDiff:
         for col in colNames_proj_ipGeneration:
             golden_df_extract[col] = self.feature_names_mapping(self.cleanup(golden_df_extract[col]))
 
+
+        # remove waived features
+        golden_df_extract = self.drop_waived(golden_df_extract)
+
         # No MultiIndex, sort by values
         golden_df_extract_sorted = (golden_df_extract.sort_values
         (by=list(golden_df_extract.columns)[:self.golden_extract_projs_start]))
@@ -188,9 +194,30 @@ class XlsxDiff:
         golden_df_extract_sorted_ri = self.index_1st_col(golden_df_extract_sorted)
 
         golden_df_extract_sorted_ri.to_excel(self.wr_golden_extract_sorted)
+        self.odd_row_coloring(self.wr_golden_extract_sorted)
         print(f"Dumping file {self.cwd}/{self.wr_golden_extract_sorted}")
         return golden_df_extract_sorted
     
+
+    def drop_waived(self, df):
+        """
+        [09/23/2022]
+        These features only exist in Golden but not in ArchGUI database. 
+        The team wants to keep these features in the golden sheet.
+        Remove them from comparison against database.
+
+        Block	    Feature	    Match
+        ------------------------------------- 
+        CM DEVICE	IDE-R	    Golden Only
+        GASKET	    MROM	    Golden Only
+        """
+        df = df.set_index(df.columns[:self.df_extract_projs_start].tolist())
+        df.drop(index=('CM DEVICE', 'IDE-R'), inplace=True)
+        df.drop(index=('GASKET', 'MROM'), inplace=True)
+        df.reset_index(inplace=True)
+        return df
+
+
     def diff(self, df1, df2):
         """
         Compare two spreadsheets and dumps out files
@@ -263,6 +290,7 @@ class XlsxDiff:
         discrepancy_ri.to_excel(self.wr_discrepancy)
         print(f"Dumping file {self.cwd}/{self.wr_discrepancy}")
         matched_ri.to_excel(self.wr_matched)
+        self.odd_row_coloring(self.wr_matched)
         print(f"Dumping file {self.cwd}/{self.wr_matched}")
         
         # diff 2:
@@ -434,7 +462,12 @@ class XlsxDiff:
             diffBF_all_ri.to_excel(self.wr_diffBF_all)
             print(f"Dumping file {self.cwd}/{self.wr_diffBF_all}")
 
-            self.equal(df1, df2)
+            # diffBF_all_ri_html = diffBF_all_ri.to_html()
+            # with open('output_diffBF.html', 'w') as f:
+            #     f.write(diffBF_all_ri_html)
+            # diffBF_all_ri.to_html(f'{self.output_dir}/output_diffBF.html')
+
+            self.equal(df1, df2, self.flag)
 
         elif self.flag == 'diff_dd':
             diffBF_golden = (
@@ -506,14 +539,20 @@ class XlsxDiff:
             diffBF_all_ri.to_excel(self.wr_diffBF_all)
             print(f"Dumping file {self.cwd}/{self.wr_diffBF_all}")
 
-            self.equal(df1[0], df2[0])
+            self.equal(df1[0], df2[0], self.flag)
 
     
-    def equal(self, df1, df2):
-        match = f"[Matched] - For details please check {self.cwd}/{self.output_dir}"
-        mismatch = f"[Mismatch Found] - For details please check {self.cwd}/{self.output_dir}"
-        if df1.equals(df2): print(match)
-        else: print(mismatch)
+    def equal(self, df1, df2, flag):
+        if flag == 'diff_xlsx':
+            match = "[Matched] - Two xlsx files are Equivalent."
+            mismatch = "[Mismatch Found] - Two xlsx files are NOT Equivalent."
+            if df1.equals(df2): print(match)
+            else: print(mismatch)
+        else:
+            match = f"[Matched] - Equivalent. For details please check {self.cwd}/{self.output_dir}"
+            mismatch = f"[Mismatch Found] - Not Equivalent. For details please check {self.cwd}/{self.output_dir}"
+            if df1.equals(df2): print(match)
+            else: print(mismatch)
 
 
     def format(self, xlsx):
@@ -528,12 +567,34 @@ class XlsxDiff:
 
         # remove index col
         df_ri = self.index_1st_col(df)
+
+        # reset index
+        df_rs = df.reset_index(drop=True)
         
         dump_file = f"{self.output_dir}/output_formatted_{xlsx.split('/')[-1]}"
         df_ri.to_excel(dump_file)
+        self.odd_row_coloring(dump_file)
         print(f"Dumping file {self.cwd}/{self.output_dir}/{dump_file}")
 
         return df
+
+    def odd_row_coloring(self, xlsx):
+        """
+        odd-row formatting, grey color
+        """
+        wb = load_workbook(xlsx)
+        ws = wb['Sheet1']
+        for row in range(1, ws.max_row + 1):
+            for col in range(1, ws.max_column + 1):
+                if row == 1:
+                    ws.cell(row, col).fill = PatternFill(fill_type="solid",
+                                                    start_color='FFFFFF',
+                                                    end_color='FFFFFF')
+                elif row % 2:
+                    ws.cell(row, col).fill = PatternFill(start_color="F0F0F0", 
+                                                    end_color="F0F0F0", 
+                                                    fill_type="solid")
+        wb.save(xlsx)
 
     def index_1st_col(self, df):
         """
@@ -574,6 +635,11 @@ class XlsxDiff:
         R: 'ROM SIZE (# IN KB)'                                                     --> G: 'ROM SIZE'
         R: 'SM4 BASIC MODES(ECB,CBC,CTR)'                                           --> G: 'SM4 BASIC MODES (ECB, CBC, CTR)'
         R: 'SRAM SIZE (EXCLUDING ECC BITS,  # IN KB)'                               --> G: 'SRAM SIZE (EXCLUDING ECC BITS)'
+        [09/23/2022]:
+        R: '16 BIT IOSF SIDEBAND PORT ID SUPPORT (CSE)'                             --> G: '16 BIT IOSF SIDEBAND PORT ID SUPPORT'
+        R: 'GKEY0 (PAVP KEY IN AES-A) (#BITS)'                                      --> G: 'GKEY0 (PAVP KEY IN AES-A)'
+        R: 'GKEY3 (# BITS)'                                                         --> G: 'GKEY3'
+        R: 'RESET FILTER (RSTFILTER_EN)'                                            --> G: 'RESET FILTER'
         """
         return (x.replace(to_replace='(PRTC NUM OF PRIVATE CHANNELS)\n(CHANNEL 0 - ESE)\n(CHANNEL1 - PRTC)',
                 value=r'\1', regex=True)                                   
@@ -629,6 +695,14 @@ class XlsxDiff:
                 value=r'\1 (\2, \3, \4)', regex=True)
                 .replace(to_replace='(SRAM)[ ]*(SIZE)[ ]*\([ ]*(EXCLUDING)[ ]*(ECC)[ ]*(BITS)[ ]*,[ ]*\#[ ]*IN[ ]*KB[ ]*\)',
                 value=r'\1 \2 (\3 \4 \5)', regex=True)
+                .replace(to_replace='(16)[ ]*(BIT)[ ]*(IOSF)[ ]*(SIDEBAND)[ ]*(PORT)[ ]*(ID)[ ]*(SUPPORT)[ ]*\([ ]*CSE[ ]*\)',
+                value=r'\1 \2 \3 \4 \5 \6 \7', regex=True)
+                .replace(to_replace='(GKEY0)[ ]*\([ ]*(PAVP)[ ]*(KEY)[ ]*(IN)[ ]*(AES-A)[ ]*\)[ ]*\([ ]*\#BITS[ ]*\)',
+                value=r'\1 (\2 \3 \4 \5)', regex=True)
+                .replace(to_replace='(GKEY3)[ ]*\(\#[ ]*BITS\)',
+                value=r'\1', regex=True)
+                .replace(to_replace='(RESET)[ ]*(FILTER)[ ]*\([ ]*RSTFILTER_EN[ ]*\)',
+                value=r'\1 \2', regex=True)
                 )         
 
     def cleanup(self, x):
@@ -667,7 +741,7 @@ def setup_parser(script_name):
     # subparser for diff_gd
     parser_diff_gd = subparsers.add_parser(
         'diff_gd',
-        help="Compare two HW arch features config files: 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' VS. HW arch features config from ArchGUI database")
+        help="To compare two HW arch features config files: 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' VS. HW arch features config from ArchGUI database")
     # add required args
     parser_diff_gd.add_argument(
         '-g',
@@ -697,7 +771,7 @@ def setup_parser(script_name):
     # subparser for diff_dd
     parser_diff_dd = subparsers.add_parser(
         'diff_dd',
-        help="Compare two HW arch features config files, both from ArchGUI database")
+        help="To compare two HW arch features config files, both from ArchGUI database")
     # add required args
     parser_diff_dd.add_argument(
         '-f1',
@@ -724,10 +798,25 @@ def setup_parser(script_name):
         help=f'Output directory, default "{script_name}_outputs"'
     )
 
+    # subparser for diff_xlsx
+    parser_diff_xlsx = subparsers.add_parser(
+        'diff_xlsx',
+        help="A quick way to tell whether two xlsx files are the same")
+    # add required args
+    parser_diff_xlsx.add_argument(
+        '-f',
+        '--files',
+        type=str,
+        metavar='',
+        nargs=2,
+        required=True,
+        help='Two xlsx files for comparison'
+    )    
+
     # subparser for format
     parser_format = subparsers.add_parser(
         'format',
-        help='Format HW arch features config file from ArchGUI database')
+        help='To format HW arch features config sheet downloaded from ArchGUI database')
     # add a required arg
     parser_format.add_argument(
         '-f',
@@ -778,5 +867,11 @@ if __name__ == "__main__":
         display()
         d = XlsxDiff(args.out_dir, args.command)
         d.format(args.file)
+        print(done)
+    elif args.command == 'diff_xlsx':
+        display()
+        d = XlsxDiff(Path.cwd(), args.command)
+        file1, file2 = pd.read_excel(args.files[0]), pd.read_excel(args.files[1])
+        d.equal(file1, file2, args.command)
         print(done)
         
