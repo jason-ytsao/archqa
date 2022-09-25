@@ -806,7 +806,7 @@ def setup_parser(script_name):
     # subparser for diff_xlsx
     parser_diff_xlsx = subparsers.add_parser(
         'diff_xlsx',
-        help="A quick way to tell whether two xlsx files are the same")
+        help="A quick way to check whether two xlsx files have the same shape and the same elements")
     # add required args
     parser_diff_xlsx.add_argument(
         '-f',
