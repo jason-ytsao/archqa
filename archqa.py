@@ -8,7 +8,6 @@ import numpy as np
 from pathlib import Path
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import PatternFill, Font
-import typing
 
 
 class XlsxDiff:
@@ -542,12 +541,18 @@ class XlsxDiff:
             self.equal(df1[0], df2[0], self.flag)
 
     
-    def equal(self, df1, df2, flag):
+    def equal(self, df1: pd.DataFrame, df2: pd.DataFrame, flag: str):
         if flag == 'diff_xlsx':
-            match = "[Matched] - Two xlsx files are Equivalent."
-            mismatch = "[Mismatch Found] - Two xlsx files are NOT Equivalent."
-            if df1.equals(df2): print(match)
-            else: print(mismatch)
+            if df1.shape == df2.shape:
+                df1_sorted, df2_sorted = df1.sort_values(by=df1.columns.tolist()), df2.sort_values(by=df2.columns.tolist())
+                df1_sorted, df2_sorted = df1_sorted.reset_index(drop=True), df2_sorted.reset_index(drop=True)
+                match = "[Matched] - Two xlsx files are found Equivalent."
+                mismatch = "[Mismatch Found] - Two xlsx files are found Not Equivalent."
+                if df1_sorted.equals(df2_sorted): print(match)
+                else: print(mismatch)
+            else:
+                mismatch = "[Mismatch Found] - Two xlsx files are Not in the same shape; NOT Equivalent."
+                print(mismatch)
         else:
             match = f"[Matched] - Equivalent. For details please check {self.cwd}/{self.output_dir}"
             mismatch = f"[Mismatch Found] - Not Equivalent. For details please check {self.cwd}/{self.output_dir}"
