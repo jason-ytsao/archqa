@@ -99,7 +99,7 @@ optional arguments:
   -o , --out_dir   Output directory, default "archqa_outputs"
 ```
 #### Example :
-If '-o' is not provided, it will be set to default, "archqa_outputs" dir under the current directory.
+If '-o' is not provided, the output directory will be set to default, "archqa_outputs" dir under the current directory.
 ```
 $ ./archqa.py diff_dd \
 -f1 /c/Users/jtsaox/mybin/ProjectConfig_2022-09-02_17_37_49.xlsx \
@@ -130,7 +130,7 @@ optional arguments:
   -o , --out_dir   Output directory, default "archqa_outputs". Only dump out a comparison report when two objects are in the same shape but have discrepancy
 ```
 #### Example :
-If -o is not provided, it will be set to default, "archqa_outputs" dir under the current directory.
+If -o is not provided, the output directory will be set to default, "archqa_outputs" dir under the current directory.
 ```
 $ ./archqa.py diffxlsx \
 -f sheet1.xlsx sheet2.xlsx \
@@ -152,7 +152,7 @@ optional arguments:
   -o , --out_dir   Output directory, default "archqa_outputs"
 ```
 #### Example :
-If '-o' is not provided, it will be set to default, "archqa_outputs" dir under the current directory.
+If '-o' is not provided, the output directory will be set to default, "archqa_outputs" dir under the current directory.
   ```
   $ ./archqa.py format \
   -f ProjectConfig_2022-09-13_16_10_30.xlsx \
