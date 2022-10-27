@@ -53,20 +53,20 @@ optional arguments:
 ```
 #### Example :
 ```
-$ ./archqa.py diff_gd \
+$ ./archqa.py diffgd \
 -g 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' \
 -d ProjectConfig_2022-09-02_17_37_49.xlsx \
 -o out_dir
 ```
 If -g is not provided, the script will pick up 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' in the current directory if it exists.
 ```
-$ ./archqa.py diff_gd \
+$ ./archqa.py diffgd \
 -d ProjectConfig_2022-09-02_17_37_49.xlsx \
 -o out_dir
 ```
 If '-o' is not provided, the output dir will be set to default, "archqa_outputs" dir under the current directory.
 ```
-$ ./archqa.py diff_gd \
+$ ./archqa.py diffgd \
 -d ProjectConfig_2022-09-02_17_37_49.xlsx 
 ```
 Output Files | Description
@@ -101,7 +101,7 @@ optional arguments:
 #### Example :
 If '-o' is not provided, the output directory will be set to default, "archqa_outputs" dir under the current directory.
 ```
-$ ./archqa.py diff_dd \
+$ ./archqa.py diffdd \
 -f1 /c/Users/jtsaox/mybin/ProjectConfig_2022-09-02_17_37_49.xlsx \
 -f2 /c/Users/jtsaox/mybin/ProjectConfig_2022-09-13_16_10_30.xlsx \
 -o out_dir
