@@ -15,7 +15,7 @@ The comparison checks only **"Block"**, **"Feature"**, and **"config"** for each
 <br>
 
 ## Usage - 
-There are four functions triggered by different arguments respectively - *difffgd*, *diffdd*, *diffxlsx*, *format*
+There are four functions that can be triggered by four different arguments respectively - *difffgd*, *diffdd*, *diffxlsx*, *format*
 ```
 $ ./archqa.py -h
 usage: archqa.py [-h] {diffgd,diffdd,diffxlsx,format} ...
@@ -89,7 +89,7 @@ $ ./archqa.py diff_gd \
 | output_formatted_ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx | The formatted version of `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database |
 | output_waived_golden.xlsx | The sheet that lists waived `Block`, `Feature` and `Config` from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`, that are not included for comparison |
 | output_diffss.xlsx | The sheet shows the highlight on the cells that contain discrepancies. This file is only available when both sheets have the same shape and matched `Block` and `Feature` pairs.
-|||
+
 
 ## **diffdd** -  <br>
 To compare two `HW arch features config sheets` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database.
@@ -122,7 +122,7 @@ $ ./archqa.py diff_dd \
 | output_formatted_ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx | The formatted version of `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database |
 | output_waived_golden.xlsx | The sheet that lists waived `Block`, `Feature` and `Config` from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`, that are not included for comparison |
 | output_diffss.xlsx | The sheet shows the highlight on the cells that contain discrepancies. This file is only available when both sheets have the same shape and matched `Block` and `Feature` pairs.
-|||
+
 ## **diffxlsx** - 
 A quick answer to check if two sheets are equivalent. It only dumps out a report of discrepancy `'output_diffxlsx.xlsx'` when two sheets have exactly the same columns and the same shape.
 ```
@@ -144,7 +144,7 @@ $ ./archqa.py diffxlsx \
 | Output Files | Description |
 | -------| ------------|
 | output_diffxlsx.xlsx | The sheet shows the highlight on the cells that contain discrepancies. This file is only available when both sheets have the same shape and matched columns. |
-|||
+
 ## **format** - 
 To format `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database for a better view.
 ```
@@ -166,4 +166,3 @@ If '-o' is not provided, it will be set to default, "archqa_outputs" dir under t
 | Output Files | Description |
 | -------| ------------|
 | output_formatted_ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx | The formatted version of `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database |
-|||
