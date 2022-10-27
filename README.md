@@ -38,7 +38,7 @@ optional arguments:
   -h, --help            show this help message and exit
 ```
 
-## **diffgd** -  <br>
+## __diffgd__ -  <br>
 To compare `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` and `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database.
 ```
 $ ./archqa.py diffgd -h
@@ -51,7 +51,7 @@ optional arguments:
   -d , --database   HW arch features config file from ArchGUI database
   -o , --out_dir    Output directory, default "archqa_outputs"
 ```
-### Example :
+#### Example :
 ```
 $ ./archqa.py diff_gd \
 -g 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' \
@@ -98,7 +98,7 @@ optional arguments:
   -f2 , --file2    HW arch features config file2 from ArchGUI database
   -o , --out_dir   Output directory, default "archqa_outputs"
 ```
-### Example :
+#### Example :
 If '-o' is not provided, it will be set to default, "archqa_outputs" dir under the current directory.
 ```
 $ ./archqa.py diff_dd \
@@ -129,7 +129,7 @@ optional arguments:
   -f  , --files    Two xlsx files for comparison
   -o , --out_dir   Output directory, default "archqa_outputs". Only dump out a comparison report when two objects are in the same shape but have discrepancy
 ```
-### Example :
+#### Example :
 If -o is not provided, it will be set to default, "archqa_outputs" dir under the current directory.
 ```
 $ ./archqa.py diffxlsx \
@@ -151,7 +151,7 @@ optional arguments:
   -f , --file      HW arch features config file from ArchGUI database
   -o , --out_dir   Output directory, default "archqa_outputs"
 ```
-### Example :
+#### Example :
 If '-o' is not provided, it will be set to default, "archqa_outputs" dir under the current directory.
   ```
   $ ./archqa.py format \
