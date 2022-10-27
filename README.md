@@ -8,8 +8,7 @@
 3. Comparison between two sheets (*.xlsx), not limited to only `HW arch features config sheet`
 4. Formatting `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database
 
-#### [Note] :
-The comparison checks only **"Block"**, **"Feature"**, and **"config"** for each IP.
+#### [Note]: The comparison checks only **`Block`**, **`Feature`**, and **`config`** for each IP.
 
 ## Usage - 
 There are four functions that can be triggered by four different arguments respectively - *difffgd*, *diffdd*, *diffxlsx*, *format*
