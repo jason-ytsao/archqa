@@ -1,7 +1,6 @@
 <!-- ### Customized script for CSME IE OCS Hardware Architecture Features Config -->
 # User Guide for archqa.py
 ## Functions - 
-
 1. Customized for HW architecture features and config comparison between this two -
    - `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`
    -  HW arch features config sheet from ArchGUI database
@@ -11,8 +10,6 @@
 
 #### [Note] :
 The comparison checks only **"Block"**, **"Feature"**, and **"config"** for each IP.
-
-<br>
 
 ## Usage - 
 There are four functions that can be triggered by four different arguments respectively - *difffgd*, *diffdd*, *diffxlsx*, *format*
@@ -40,7 +37,6 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
 ```
-<br>
 
 ## **diffgd** -  <br>
 To compare `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` and `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database.
@@ -73,23 +69,22 @@ If '-o' is not provided, the output dir will be set to default, "archqa_outputs"
 $ ./archqa.py diff_gd \
 -d ProjectConfig_2022-09-02_17_37_49.xlsx 
 ```
-| Output Files | Description |
-| -------| ------------|
-| output_diffbf.xlsx | The sheet that shows the discrepancies in respect to column `Block` and `Feature` |
-| output_diffbf_exrtradb.xlsx | The sheet that lists `Block` and `Feature` that are found in ArchGUI database but are NOT found in `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` |
-| output_diffbf_extragolden.xlsx | The sheet that lists `Block` and `Feature` that are found in `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` but are NOT found in ArchGUI database |
-| output_diffcfg.xlsx | The sheet that shows all the discrepancies of `Block`, `Feature` and `Config` from comparison |
-| output_diffcfg_db.xlsx | The sheet that lists `Block`, `Feature` and `Config` that are found in ArchGUI database but are NOT found in `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` |
-| output_diffcfg_golden.xlsx | The sheet that lists `Block`, `Feature` and `Config` that are found in `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` but are NOT found in ArchGUI database |
-| output_matched.xlsx | The sheet that lists all the matched `Block`, `Feature` and `Config` from comparison |
-| output_extract_sorted_db.xlsx | Sorted HW arch features config sheet extracted from ArchGUI database that contains only column `Block`, `Feature` and `Config` |
-| output_extract_sorted_golden.xlsx | Sorted sheet extracted from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` that contains only column `Block`, `Feature` and `Config` |
-| output_feature_names_mapping_db.xlsx | The sheet that lists `Feature` names from ArchGUI database that have been modified or changed for mapping to the ones in `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` |
-| output_feature_names_mapping_golden.xlsx | The sheet that lists `Feature` names from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` that have been modified or changed for mapping to the ones in ArchGUI database |
-| output_formatted_ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx | The formatted version of `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database |
-| output_waived_golden.xlsx | The sheet that lists waived `Block`, `Feature` and `Config` from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`, that are not included for comparison |
-| output_diffss.xlsx | The sheet shows the highlight on the cells that contain discrepancies. This file is only available when both sheets have the same shape and matched `Block` and `Feature` pairs.
-
+Output Files | Description
+-------| ------------
+output_diffbf.xlsx | The sheet that shows the discrepancies in respect to column `Block` and `Feature`
+output_diffbf_exrtradb.xlsx | The sheet that lists `Block` and `Feature` that are found in ArchGUI database but are NOT found in `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`
+output_diffbf_extragolden.xlsx | The sheet that lists `Block` and `Feature` that are found in `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` but are NOT found in ArchGUI database
+output_diffcfg.xlsx | The sheet that shows all the discrepancies of `Block`, `Feature` and `Config` from comparison
+output_diffcfg_db.xlsx | The sheet that lists `Block`, `Feature` and `Config` that are found in ArchGUI database but are NOT found in `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`
+output_diffcfg_golden.xlsx | The sheet that lists `Block`, `Feature` and `Config` that are found in `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` but are NOT found in ArchGUI database
+output_matched.xlsx | The sheet that lists all the matched `Block`, `Feature` and `Config` from comparison
+output_extract_sorted_db.xlsx | Sorted HW arch features config sheet extracted from ArchGUI database that contains only column `Block`, `Feature` and `Config`
+output_extract_sorted_golden.xlsx | Sorted sheet extracted from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` that contains only column `Block`, `Feature` and `Config`
+output_feature_names_mapping_db.xlsx | The sheet that lists `Feature` names from ArchGUI database that have been modified or changed for mapping to the ones in `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`
+output_feature_names_mapping_golden.xlsx | The sheet that lists `Feature` names from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` that have been modified or changed for mapping to the ones in ArchGUI database 
+output_formatted_ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx | The formatted version of `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database
+output_waived_golden.xlsx | The sheet that lists waived `Block`, `Feature` and `Config` from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`, that are not included for comparison 
+output_diffss.xlsx | The sheet shows the highlight on the cells that contain discrepancies. This file is only available when both sheets have the same shape and matched `Block` and `Feature` pairs.
 
 ## **diffdd** -  <br>
 To compare two `HW arch features config sheets` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database.
