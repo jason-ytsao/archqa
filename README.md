@@ -3,9 +3,9 @@
 ## Functions - 
 1. Customized for HW architecture features and config comparison between this two -
    - `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`
-   -  HW arch features config sheet from ArchGUI database
+   -  `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database
 2. Comparison between two HW arch features config sheets from ArchGUI database
-3. Comparison between two sheets (*.xlsx)
+3. Comparison between two sheets (*.xlsx), not limited to only `HW arch features config sheet`
 4. Formatting `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database
 
 #### [Note] :
