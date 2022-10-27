@@ -11,7 +11,7 @@
 #### [Note]: The comparison checks only **`Block`**, **`Feature`**, and **`config`** for each IP.
 
 ## Usage - 
-There are four functions that can be triggered by four different arguments respectively - *__difffgd__*, *__diffdd__*, *__diffxlsx__*, *__format__*
+There are four functions that can be triggered by four different arguments respectively - *__difffgd__*, *__diffdd__*, *__diffxlsx__*, *__format__* in Git Bash terminal.
 ```
 $ ./archqa.py -h
 usage: archqa.py [-h] {diffgd,diffdd,diffxlsx,format} ...
