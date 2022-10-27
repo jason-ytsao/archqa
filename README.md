@@ -115,7 +115,7 @@ $ ./archqa.py diffdd \
 | output_matched.xlsx | The sheet that lists all the matched `Block`, `Feature` and `Config` from comparison |
 | output_extract_sorted_ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx | Sorted sheet extracted from `ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx` that contains only column `Block`, `Feature` and `Config` |
 | output_formatted_ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx | The formatted version of `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database |
-| output_waived_golden.xlsx | The sheet that lists waived `Block`, `Feature` and `Config` from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`, that are not included for comparison |
+| output_waived_golden.xlsx | The sheet that lists `Block`, `Feature` and `Config` from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`, that are waived from comparison |
 | output_diffss.xlsx | The sheet shows the highlight on the cells that contain discrepancies. This file is only available when both sheets have the same shape and matched `Block` and `Feature` pairs.
 
 ## **diffxlsx** - 
