@@ -37,7 +37,7 @@ optional arguments:
   -h, --help            show this help message and exit
 ```
 
-## __diffgd__  <br>
+### __diffgd__  <br>
 To compare `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'` and `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database.
 ```
 $ ./archqa.py diffgd -h
@@ -85,7 +85,7 @@ output_formatted_ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx | The formatted versio
 output_waived_golden.xlsx | The sheet that lists waived `Block`, `Feature` and `Config` from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`, that are not included for comparison 
 output_diffss.xlsx | The sheet shows the highlight on the cells that contain discrepancies. This file is only available when both sheets have the same shape and matched `Block` and `Feature` pairs.
 
-## **diffdd**  <br>
+### **diffdd**  <br>
 To compare two `HW arch features config sheets` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database.
 ```
 $ ./archqa.py diffdd -h
@@ -117,7 +117,7 @@ $ ./archqa.py diffdd \
 | output_waived_golden.xlsx | The sheet that lists `Block`, `Feature` and `Config` from `'CSME IE OCS Hardware Architecture Features Per Project.xlsm'`, that are waived from comparison |
 | output_diffss.xlsx | The sheet shows the highlight on the cells that contain discrepancies. This file is only available when both sheets have the same shape and matched `Block` and `Feature` pairs.
 
-## **diffxlsx** 
+### **diffxlsx** 
 A quick answer to check if two sheets are equivalent. It only dumps out a report of discrepancy `'output_diffxlsx.xlsx'` when two sheets have exactly the same columns and the same shape.
 ```
 $ ./archqa.py diffxlsx -h
@@ -139,7 +139,7 @@ $ ./archqa.py diffxlsx \
 | -------| ------------|
 | output_diffxlsx.xlsx | The sheet shows the highlight on the cells that contain discrepancies. This file is only available when both sheets have the same shape and matched columns. |
 
-## **format** 
+### **format** 
 To format `HW arch features config sheet` `(ProjectConfig_<yyyy-mm-dd_xx_xx_xx>.xlsx)` from ArchGUI database for a better view.
 ```
 $ ./archqa.py format -h
