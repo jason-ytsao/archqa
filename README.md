@@ -57,7 +57,7 @@ $ ./archqa.py diffgd \
 -d ProjectConfig_2022-09-02_17_37_49.xlsx \
 -o out_dir
 ```
-If -g is not provided, the script will pick up 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' in the current directory if it exists.
+If -g is not provided, the script will pick up 'CSME IE OCS Hardware Architecture Features Per Project.xlsm' under the current directory if it exists.
 ```
 $ ./archqa.py diffgd \
 -d ProjectConfig_2022-09-02_17_37_49.xlsx \
